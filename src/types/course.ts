@@ -21,6 +21,7 @@ export interface Course {
   updatedAt: string;
   isPublished: boolean;
   isFeatured?: boolean;
+  progress?: number; // For enrolled courses, track completion percentage
 }
 
 export interface Lesson {

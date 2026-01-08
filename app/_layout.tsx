@@ -31,6 +31,9 @@ function AppContent() {
         <Stack.Screen name="index" />
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="course/[id]" />
+        <Stack.Screen name="video/[id]" />
+        <Stack.Screen name="quiz/[id]" />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

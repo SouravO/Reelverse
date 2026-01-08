@@ -35,7 +35,7 @@ export default function HomeScreen() {
   const renderCourseCard = ({ item }: any) => (
     <TouchableOpacity
       style={styles.courseCard}
-      onPress={() => router.push("/(tabs)" as any)} // TODO: Add course detail screen
+      onPress={() => router.push(`/course/${item.id}` as any)}
     >
       <View style={styles.courseThumbnail}>
         <Text style={styles.courseThumbnailText}>📚</Text>
@@ -62,6 +62,10 @@ export default function HomeScreen() {
             What would you like to learn today?
           </Text>
         </View>
+        {/* logout button */}
+        <TouchableOpacity onPress={() => router.push("/(auth)/login" as any)}>
+          <Text style={{ color: theme.colors.primary.contrast }}>Logout</Text>
+        </TouchableOpacity>
       </View>
 
       <FlatList
