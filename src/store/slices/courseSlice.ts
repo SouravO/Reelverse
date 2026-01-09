@@ -1,4 +1,4 @@
-import { courseAPI } from "@/api/courseAPI";
+import { courses } from "@/api/endpoints";
 import type { Course } from "@/types/course";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
@@ -23,7 +23,7 @@ export const fetchCourses = createAsyncThunk(
   "courses/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      return await courseAPI.getAllCourses();
+      return await courses.getAll();
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -34,7 +34,7 @@ export const fetchEnrolledCourses = createAsyncThunk(
   "courses/fetchEnrolled",
   async (userId: string, { rejectWithValue }) => {
     try {
-      return await courseAPI.getEnrolledCourses(userId);
+      return await courses.getEnrolled(userId);
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -45,7 +45,7 @@ export const fetchCourseById = createAsyncThunk(
   "courses/fetchById",
   async (courseId: string, { rejectWithValue }) => {
     try {
-      return await courseAPI.getCourseById(courseId);
+      return await courses.getById(courseId);
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -59,7 +59,7 @@ export const enrollCourse = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      return await courseAPI.enrollCourse(userId, courseId);
+      return await courses.enroll(userId, courseId);
     } catch (error: any) {
       return rejectWithValue(error.message);
     }

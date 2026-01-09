@@ -1,4 +1,4 @@
-import { authAPI } from "@/api/authAPI";
+import { auth } from "@/api/endpoints";
 import type { User } from "@/types/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
@@ -27,7 +27,7 @@ export const loginUser = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await authAPI.login(email, password);
+      const response = await auth.login(email, password);
       await AsyncStorage.setItem("authToken", response.token);
       return response;
     } catch (error: any) {
@@ -43,7 +43,7 @@ export const registerUser = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await authAPI.register(userData);
+      const response = await auth.register(userData);
       await AsyncStorage.setItem("authToken", response.token);
       return response;
     } catch (error: any) {
@@ -56,7 +56,7 @@ export const logoutUser = createAsyncThunk(
   "auth/logout",
   async (_, { rejectWithValue }) => {
     try {
-      await authAPI.logout();
+      await auth.logout();
       await AsyncStorage.removeItem("authToken"); // Clean up local storage
     } catch (error: any) {
       return rejectWithValue(error.message || "Logout failed");
@@ -68,7 +68,7 @@ export const checkAuthStatus = createAsyncThunk(
   "auth/checkStatus",
   async (_, { rejectWithValue }) => {
     try {
-      const user = await authAPI.getCurrentUser();
+      const user = await auth.getCurrentUser();
       if (user) {
         return {
           user,

@@ -51,6 +51,7 @@ export const ROUTES = {
   COURSE_DETAIL: "/course/",
   VIDEO_PLAYER: "/video/",
   QUIZ: "/quiz/",
+  SETTINGS: "/settings",
 };
 
 export const COLORS = {

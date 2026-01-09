@@ -1,35 +1,32 @@
-import { apiService } from "./client";
+import { api } from './endpoints';
 
-interface PaymentIntent {
-  clientSecret: string;
-  amount: number;
-}
-
+/**
+ * Payment API service
+ */
 export const paymentAPI = {
-  createPaymentIntent: async (
-    courseIds: string[],
-    amount: number
-  ): Promise<PaymentIntent> => {
-    return apiService.post<PaymentIntent>("/payments/create-intent", {
-      courseIds,
-      amount,
-    });
+  /**
+   * Create payment intent
+   */
+  createPaymentIntent: async (courseId: string, amount: number) => {
+    try {
+      return await api.payment.createIntent(courseId, amount);
+    } catch (error) {
+      console.error('Error creating payment intent:', error);
+      throw error;
+    }
   },
 
-  confirmPayment: async (
-    paymentIntentId: string
-  ): Promise<{ success: boolean }> => {
-    return apiService.post("/payments/confirm", { paymentIntentId });
-  },
-
-  getPaymentHistory: async (userId: string): Promise<any[]> => {
-    return apiService.get(`/users/${userId}/payments`);
-  },
-
-  applyPromoCode: async (
-    code: string,
-    courseIds: string[]
-  ): Promise<{ discount: number; newTotal: number }> => {
-    return apiService.post("/payments/apply-promo", { code, courseIds });
+  /**
+   * Confirm payment
+   */
+  confirmPayment: async (paymentIntentId: string) => {
+    try {
+      return await api.payment.confirmPayment(paymentIntentId);
+    } catch (error) {
+      console.error('Error confirming payment:', error);
+      throw error;
+    }
   },
 };
+
+export default paymentAPI;

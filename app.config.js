@@ -1,8 +1,14 @@
-module.exports = {
+
+export default {
     expo: {
         name: "reelverse",
         slug: "reelverse",
         version: "1.0.0",
+        extra: {
+            eas: {
+                projectId: "5fdbce41-fdc6-4e45-8211-0bd0bc6f56e8"
+            }
+        },
         orientation: "portrait",
         icon: "./assets/images/icon.png",
         scheme: "reelverse",
@@ -12,6 +18,9 @@ module.exports = {
             supportsTablet: true
         },
         android: {
+            package: "com.reelverse.app",
+            versionCode: 1,
+
             adaptiveIcon: {
                 backgroundColor: "#E6F4FE",
                 foregroundImage: "./assets/images/android-icon-foreground.png",

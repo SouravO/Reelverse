@@ -1,127 +1,129 @@
-import type { Course } from "@/types/course";
-import { supabase } from "@/services/supabase";
+import { api } from './endpoints';
+import type { Course } from '@/types/course';
 
+/**
+ * Course API service
+ */
 export const courseAPI = {
+  /**
+   * Get all courses
+   */
   getAllCourses: async (): Promise<Course[]> => {
-    const { data, error } = await supabase
-      .from("courses")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) throw new Error(error.message);
-    return data || [];
+    try {
+      return await api.courses.getAll();
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+      throw error;
+    }
   },
 
+  /**
+   * Get course by ID
+   */
   getCourseById: async (courseId: string): Promise<Course> => {
-    const { data, error } = await supabase
-      .from("courses")
-      .select("*")
-      .eq("id", courseId)
-      .single();
-
-    if (error) throw new Error(error.message);
-    return data;
+    try {
+      return await api.courses.getById(courseId);
+    } catch (error) {
+      console.error('Error fetching course:', error);
+      throw error;
+    }
   },
 
+  /**
+   * Get enrolled courses for a user
+   */
   getEnrolledCourses: async (userId: string): Promise<Course[]> => {
-    const { data, error } = await supabase
-      .from("enrollments")
-      .select("course_id, courses(*)")
-      .eq("user_id", userId);
-
-    if (error) throw new Error(error.message);
-    
-    // Extract courses from the joined data
-    const courses = data?.map((enrollment: any) => enrollment.courses) || [];
-    return courses;
+    try {
+      return await api.courses.getEnrolled(userId);
+    } catch (error) {
+      console.error('Error fetching enrolled courses:', error);
+      throw error;
+    }
   },
 
+  /**
+   * Enroll user in a course
+   */
   enrollCourse: async (userId: string, courseId: string): Promise<void> => {
-    const { error } = await supabase
-      .from("enrollments")
-      .insert({
-        user_id: userId,
-        course_id: courseId,
-        progress: 0,
-      });
-
-    if (error) throw new Error(error.message);
+    try {
+      await api.courses.enroll(userId, courseId);
+    } catch (error) {
+      console.error('Error enrolling in course:', error);
+      throw error;
+    }
   },
 
+  /**
+   * Get courses by category
+   */
   getCoursesByCategory: async (category: string): Promise<Course[]> => {
-    const { data, error } = await supabase
-      .from("courses")
-      .select("*")
-      .eq("category", category)
-      .order("created_at", { ascending: false });
-
-    if (error) throw new Error(error.message);
-    return data || [];
+    try {
+      return await api.courses.getByCategory(category);
+    } catch (error) {
+      console.error('Error fetching courses by category:', error);
+      throw error;
+    }
   },
 
+  /**
+   * Search courses
+   */
   searchCourses: async (query: string): Promise<Course[]> => {
-    const { data, error } = await supabase
-      .from("courses")
-      .select("*")
-      .or(`title.ilike.%${query}%,description.ilike.%${query}%`)
-      .order("rating", { ascending: false });
-
-    if (error) throw new Error(error.message);
-    return data || [];
+    try {
+      return await api.courses.search(query);
+    } catch (error) {
+      console.error('Error searching courses:', error);
+      throw error;
+    }
   },
 
+  /**
+   * Get featured courses
+   */
   getFeaturedCourses: async (): Promise<Course[]> => {
-    const { data, error } = await supabase
-      .from("courses")
-      .select("*")
-      .gte("rating", 4.5)
-      .order("rating", { ascending: false })
-      .limit(10);
-
-    if (error) throw new Error(error.message);
-    return data || [];
+    try {
+      return await api.courses.getFeatured();
+    } catch (error) {
+      console.error('Error fetching featured courses:', error);
+      throw error;
+    }
   },
 
-  rateCourse: async (
-    courseId: string,
-    rating: number,
-    userId: string
-  ): Promise<void> => {
-    // This would typically update a ratings table
-    // For now, we'll just update the course's average rating
-    const { error } = await supabase
-      .from("course_ratings")
-      .insert({
-        course_id: courseId,
-        user_id: userId,
-        rating,
-      });
-
-    if (error) throw new Error(error.message);
+  /**
+   * Rate a course
+   */
+  rateCourse: async (courseId: string, rating: number, userId: string): Promise<void> => {
+    try {
+      await api.courses.rate(courseId, rating, userId);
+    } catch (error) {
+      console.error('Error rating course:', error);
+      throw error;
+    }
   },
 
-  // Get lessons for a specific course
+  /**
+   * Get lessons for a course
+   */
   getCourseLessons: async (courseId: string): Promise<any[]> => {
-    const { data, error } = await supabase
-      .from("lessons")
-      .select("*")
-      .eq("course_id", courseId)
-      .order("order_index", { ascending: true });
-
-    if (error) throw new Error(error.message);
-    return data || [];
+    try {
+      return await api.courses.getLessons(courseId);
+    } catch (error) {
+      console.error('Error fetching course lessons:', error);
+      throw error;
+    }
   },
 
-  // Check if user is enrolled in a course
+  /**
+   * Check if user is enrolled in a course
+   */
   isEnrolled: async (userId: string, courseId: string): Promise<boolean> => {
-    const { data, error } = await supabase
-      .from("enrollments")
-      .select("id")
-      .eq("user_id", userId)
-      .eq("course_id", courseId)
-      .single();
-
-    return !error && !!data;
+    try {
+      return await api.courses.isEnrolled(userId, courseId);
+    } catch (error) {
+      console.error('Error checking enrollment:', error);
+      throw error;
+    }
   },
 };
 
+export default courseAPI;
